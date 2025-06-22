@@ -1,0 +1,242 @@
+---
+title: "Customize graphs with R and ggplot2"
+subtitle: "Data Visualization Meetup Munich"
+format: 
+  revealjs:
+    logo: theme/logo.png
+    width: 90%
+    progress: true
+    theme: [theme/theme.scss]
+    transition: fade
+    transition-speed: fast
+    footer: "Data Visualization Meetup Munich | July 8th, 2025 | Ansgar Wolsing"
+    title-slide-attributes:
+      data-background-image: theme/vertical-bar.png
+      data-background-size: 12% 100%
+      data-background-position: 100% 98%, 100% 98%
+---
+
+# 30DayChartChallenge
+
+## ![Chart](media/09-all-too-well.png){height=660px}{.center}
+
+##
+
+<div class="chart-title-only"></div>
+
+```{css}
+
+.chart-title-only {
+    width: 100%; 
+    padding-bottom: 17%; 
+    background-image: url('media/09-all-too-well.png'); /
+    background-repeat: no-repeat;
+    background-size: 100% auto; 
+    background-position: top center;  
+    overflow: hidden;
+    border: 1px solid #ccc; 
+}
+
+```
+
+
+## {transition=fade}
+
+<div class="chart-first-decade-with-title"></div>
+
+```{css}
+
+.chart-first-decade-with-title {
+    width: 100%; 
+    padding-bottom: 43%; 
+    background-image: url('media/09-all-too-well.png'); /
+    background-repeat: no-repeat;
+    background-size: 100% auto; 
+    background-position: top center;  
+    overflow: hidden;
+    border: 1px solid #ccc; 
+}
+
+```
+
+
+## 
+
+<div class="chart-first-decade"></div>
+
+```{css}
+
+.chart-first-decade {
+    width: 100%; 
+    padding-bottom: 17%; 
+    background-image: url('media/09-all-too-well.png'); /
+    background-repeat: no-repeat;
+    background-size: 100% auto; 
+    background-position: center 20%;  
+    overflow: hidden;
+    border: 1px solid #ccc; 
+}
+
+```
+
+# The code
+
+
+## Load the required libraries and the dataset
+
+```{r, echo=TRUE, cache=FALSE, `code-line-numbers`="1,2,3"}
+
+library(tidyverse)
+# library(glue)
+library(ggtext)
+
+tracks_df <- read_rds(file.path("data", "no1-tracks-prepared.rds"))
+
+```
+
+`library()` loads R packages into the R session.
+
+
+## Load the required libraries and the dataset 
+
+```{r, echo=TRUE, cache=FALSE, `code-line-numbers`="5"}
+
+library(tidyverse)
+library(glue)
+library(ggtext)
+
+tracks_df <- read_rds(file.path("data", "no1-tracks-prepared.rds"))
+
+```
+
+`read_rds()` from the `readr` package (part of the `tidverse` meta package) reads an R object which was generated in a separate R script. 
+
+
+## Load the required libraries and the dataset 
+
+```{r, echo=TRUE, cache=FALSE, `code-line-numbers`="5"}
+
+library(tidyverse)
+library(glue)
+library(ggtext)
+
+tracks_df <- read_rds(file.path("data", "no1-tracks-prepared.rds"))
+
+```
+
+```{r, echo=FALSE}
+tracks_df |>
+  select(-c(id, href)) |> 
+  head() |> 
+  gt::gt() |> 
+  gt::cols_align("left", artist_song) |> 
+  gt::tab_options(
+     table.font.names = "Source Sans Pro",
+    column_labels.background.color = "#555555",
+    column_labels.font.weight = "bold")
+
+```
+
+
+
+
+## Data preparation
+
+Prepare a dataframe with the longest songs per decade. We'll need these for the labels.
+
+```{r, echo=TRUE, cache=FALSE}
+
+# identify songs which are the longest in their decade
+df_longest_no1_per_decade <- tracks_df |>
+  group_by(decade) %>% 
+  slice_max(order_by = duration_s, n = 1, with_ties = TRUE) |>
+  ungroup() |>
+  mutate(
+    label = str_replace(artist_song, " - ", "\n"),
+    label = ifelse(str_detect(label, "Taylor Swift"), 
+                   "Taylor Swift\nAll Too Well (Taylor's Version)", 
+                   label))
+```
+
+
+## Data preparation
+
+Prepare a dataframe with the longest songs per decade. We'll need these for the labels.
+
+```{r, echo=FALSE}
+df_longest_no1_per_decade |> 
+  select(-c(id, href)) |> 
+  head() |> 
+  gt::gt() |> 
+  gt::cols_align("left", artist_song) |> 
+  gt::tab_options(
+     table.font.names = "Source Sans Pro",
+    column_labels.background.color = "#555555",
+    column_labels.font.weight = "bold")
+
+
+```
+
+## Our first visualization of the data {auto-animate=true} 
+
+::: {.columns}
+
+::: {.column width="35%"}
+```{r, echo=TRUE, eval=FALSE}
+ggplot(
+  data = df_longest_no1_per_decade,
+  mapping = aes(x = label, y = duration_s)) +
+  geom_col()
+```
+:::
+
+::: {.column width="65%" .fragment}
+<br><br><br>
+```{r, echo=FALSE, fig.width=8, fig.height=4.5}
+ggplot(
+  data = df_longest_no1_per_decade,
+  mapping = aes(x = label, y = duration_s)) +
+  geom_col()
+```
+:::
+
+:::
+
+
+## Dataviz 101 - *Rotate that damn plot!* {auto-animate=true}
+
+::: {.columns}
+
+::: {.column width="35%"}
+```{r, echo=TRUE, eval=FALSE, `code-line-numbers`="3"}
+ggplot(
+  data = df_longest_no1_per_decade,
+  mapping = aes(x = duration_s, y = label)) +
+  geom_col()
+```
+:::
+
+::: {.column width="65%"}
+<br><br><br>
+```{r, echo=FALSE, fig.width=8, fig.height=4.5}
+ggplot(
+  data = df_longest_no1_per_decade,
+  mapping = aes(x = duration_s, y = label)) +
+  geom_col()
+```
+:::
+
+:::
+
+
+## Next
+
+```{r, echo=FALSE, fig.width=8, fig.height=4.5}
+ggplot(
+  data = df_longest_no1_per_decade,
+  mapping = aes(x = duration_s, y = label)) +
+  geom_col() +
+  facet_wrap(vars(decade), ncol = 1, scales = "free_y", strip.position = "left")
+```
+
+

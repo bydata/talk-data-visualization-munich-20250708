@@ -1,0 +1,47 @@
+/*-- scss:defaults --*/
+$color-maincolor: #004aad;
+$color-background: #f1ebea;
+$color-highlight: #ff914d;
+$color-highlight-light: #D8D8C9;
+$color-lightblue: #d4dfed;
+
+/*-- scss:rules --*/
+
+body > div.reveal {
+  background-color: $color-background //#e7e6e4;
+}
+
+h1.title,
+.slide h1,
+.slide h2,
+.slide h3 {
+  font-family: Lora, Montserrat, Sans-Serif;
+}
+
+.slide,
+.slide h4,
+.slide h5 {
+  font-family: Poppins, Sans-Serif;
+}
+
+.center h2 {
+  text-align: center;
+}
+
+.slide h2, .slide h3 {
+  color: $color-maincolor;
+}
+
+.theme-slide1 {
+
+}
+
+
+.reveal div.sourceCode {
+  border: none;
+  border-radius: 5px;
+  margin-bottom: 10px !important;
+  box-shadow: 0 10px 18px 0px rgb(0 0 0 / 45%);
+  width: fit-content;
+  margin: 25px 0 !important;
+}
