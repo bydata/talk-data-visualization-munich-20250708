@@ -249,11 +249,6 @@ reveal_gg_layers(7)
 :::
 
 
-
-
-
-
-
 ## Load the required libraries and the dataset
 
 ```{r, echo=TRUE, cache=FALSE, `code-line-numbers`="1,2,3"}
@@ -581,7 +576,7 @@ p_base <- ggplot(
     x = duration_s, y = factor(decade),
     group = decade)) +
   labs(
-    title = "Longest number one song per decade",
+    title = "Length of number 1 songs per decade",
     subtitle = "US Billboard Hot 100,
       song duration in seconds",
     x = NULL, y = NULL
@@ -739,6 +734,167 @@ p
 :::
 
 
+## Like the Economist (2025)
+
+::: columns
+::: {.column width="50%"}
+```{r, echo=TRUE, include=TRUE}
+p <- tracks_df |> 
+  mutate(
+    year = year(first_no1_date),
+    duration_min = duration_s / 60) |> 
+  ggplot(
+  mapping = aes(
+    x = year, y = duration_min)
+  ) +
+  geom_point(
+    color = "#F04629",
+    alpha = 0.3) +
+  geom_smooth(
+    method = "loess",
+    color = "white", linewidth = 2.2, 
+    se = FALSE) +
+  geom_smooth(
+    method = "loess",
+    color = "#DF2124", linewidth = 1.7,
+    se = FALSE) +
+  geom_point(
+    data = ~filter(
+      ., 
+      id == "5enxwA8aAbwZbf5qCHORXi"),
+    size = 3, shape = 21, stroke = 1,
+    fill = "#F04629",
+    color = "black"
+  ) +
+  geom_richtext(
+    data = ~filter(
+      ., 
+      id == "5enxwA8aAbwZbf5qCHORXi"),
+    aes(
+    label = "<span style='
+    font-family: 
+    \"Roboto Condensed Medium\"'>Taylor Swift</span><br>All Too Well"),
+    size = 5, color = "black",
+    family = "Roboto Condensed",
+    hjust = 1, nudge_x = -2,
+    lineheight = 1.1, label.size = 0,
+    fill = NA
+  ) +
+  scale_x_continuous(
+    breaks = seq(1960, 2020, 10)) +
+  scale_y_continuous(
+    breaks = 0:12
+  ) +
+  coord_cartesian(ylim = c(0, NA)) +
+  labs(
+    title = "Turning back time",
+    subtitle = "US Billboard Hot 100,
+      Length in minutes",
+    caption = "Original by The Economist",
+    x = NULL, y = NULL
+  ) +
+  theme_minimal(
+    base_family = "Roboto Condensed",
+    base_size = 18) +
+  theme(
+    plot.background = element_rect(
+      color = "grey50", fill = "#EBEBDF"
+    ),
+    plot.title = element_text(face = "bold"),
+    plot.subtitle = element_markdown(),
+    plot.title.position = "plot",
+    panel.grid = element_blank(),
+    panel.grid.major.y = element_line(
+      color = "#CACABE", linewidth = 0.3
+    )
+  )
+
+```
+:::
+
+::: {.column width="50%"}
+```{r, echo=FALSE, fig.width=6.5, fig.height=6}
+p
+```
+:::
+:::
+
+
+## Finally, the plot
+
+::: columns
+::: {.column width="50%"}
+```{r, echo=TRUE, include=TRUE}
+library(ggbeeswarm)
+
+p <- ggplot(
+  data = tracks_df,
+  aes(x = factor(decade), 
+      y = duration_s)) +
+  geom_beeswarm()
+
+```
+:::
+
+::: {.column width="50%"}
+```{r, echo=FALSE, fig.width=6.5, fig.height=6}
+p
+```
+:::
+:::
+
+
+## Style the dots
+
+::: columns
+::: {.column width="50%"}
+```{r, echo=TRUE, include=TRUE}
+greyscale_palette <- c(
+  "grey60", "grey55","grey50", "grey45", 
+  "grey40", "grey35", "grey30", "grey25"
+) 
+
+p <- ggplot(
+  data = tracks_df,
+  aes(x = factor(decade), 
+      y = duration_s)) +
+  geom_beeswarm(
+    aes(fill = factor(decade)),
+    cex = 0.75, shape = 21, 
+    col = "white", alpha = 0.95,
+    size = 2) +
+  scale_fill_manual(
+    values = greyscale_palette)
+
+```
+:::
+
+::: {.column width="50%"}
+```{r, echo=FALSE, fig.width=6.5, fig.height=6}
+p
+```
+:::
+:::
+
+## Rotate the plot and remove the legend
+
+::: columns
+::: {.column width="50%"}
+```{r, echo=TRUE, include=TRUE}
+p <- p +
+  coord_flip() +
+  guides(fill = "none")
+
+```
+:::
+
+::: {.column width="50%"}
+```{r, echo=FALSE, fig.width=6.5, fig.height=6}
+p
+```
+:::
+:::
+
 
 
 ## Resources
@@ -750,7 +906,9 @@ p
 [github.com/bydata/30DayChartChallenge/tree/main/2022/09](https://github.com/bydata/30DayChartChallenge/tree/main/2022/09)
 - {ggplot2} documentation:<br>
 [ggplot2.tidyverse.org](https://ggplot2.tidyverse.org/)
+- Economist chart: [bsky.app/profile/alexselbyb.bsky.social/post/3lqptoe76jk2e](https://bsky.app/profile/alexselbyb.bsky.social/post/3lqptoe76jk2e)
 </div>
+
 
 ## Contact
 
