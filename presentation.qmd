@@ -149,7 +149,7 @@ create functions for repeated tasks
 ## ggplot2 at a glance
 
 <div style="margin-bottom: -150px !important; padding-bottom: 0px !important">
-"gg" = Grammar of Graphics (Wilkinson 2005)
+Implementation of the Grammar of Graphics (Wilkinson 2005) in R ("gg")
 </div>
 
 ```{r, echo=FALSE}
@@ -194,7 +194,7 @@ reveal_gg_layers <- function(x) {
     data = layers[x, ],
     aes(x = 1.6, y = y, label = name,
         color = factor(id, levels = seq_len(number_of_shapes))),
-    hjust = 0, vjust = -0.2, size = 6, family = "Poppins SemiBold"
+    hjust = 0, vjust = -0.2, size = 9, family = "Poppins SemiBold"
     ) +
   scale_fill_manual(values = color_mapping,
                     aesthetics = c("fill", "color")) +
@@ -207,6 +207,13 @@ reveal_gg_layers <- function(x) {
 }
 
 ```
+
+
+## ggplot2 at a glance
+
+<div style="margin-bottom: -150px !important; padding-bottom: 0px !important">
+Implementation of the Grammar of Graphics (Wilkinson 2005) in R ("gg")
+</div>
 
 ::: {.r-stack}
 
@@ -259,6 +266,8 @@ tracks_df <- read_rds(file.path("data", "no1-tracks-prepared.rds"))
 ```
 
 `library()` loads R packages into the R session.
+
+{ggplot2} is part of the {tidyverse}
 
 ## Load the required libraries and the dataset
 
