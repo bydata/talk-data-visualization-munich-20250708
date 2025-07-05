@@ -152,7 +152,7 @@ create functions for repeated tasks
 "gg" = Grammar of Graphics (Wilkinson 2005)
 </div>
 
-```{r, echo=FALSE, include=TRUE, warning=FALSE, message=FALSE, fig.height=6.5, out.height="100%", dev="png", dev.args=list(bg="transparent")}
+```{r, echo=FALSE}
 library(tidyverse)
 library(ggforce)
 
@@ -171,25 +171,32 @@ shapes <- tibble(
   unnest(cols = shape) |> 
   mutate(y2 = y + (id - 1) * (1 - overlap_factor))
   
-elements <- data.frame(
+layers <- data.frame(
   id = seq_len(number_of_shapes),
   y = (seq_len(number_of_shapes) - 1) * (1 - overlap_factor),
-  element = c("Data", "Aesthetics", "Layers", "Scales", "Facets", 
+  name = c("Data", "Aesthetics", "Layers", "Scales", "Facets", 
               "Coordinate system", "Theme")
 )
 
-ggplot() +
+color_mapping <- MetBrewer::met.brewer("Moreau")[seq_len(number_of_shapes)]
+names(color_mapping) <- as.character(seq_len(number_of_shapes))
+
+reveal_gg_layers <- function(x) {
+  stopifnot(max(x) <= nrow(shapes) & max(x) <= nrow(layers))
+  ggplot() +
   geom_shape(
-    data = shapes, 
-    aes(x = x, y = y2, fill = factor(id)),
+    data = filter(shapes, id %in% {{x}}), 
+    aes(x = x, y = y2,
+        fill = factor(id, levels = seq_len(number_of_shapes))),
     alpha = 0.6) +
   coord_cartesian(xlim = c(0, 2.5), ylim = c(0, number_of_shapes + 1)) +
   geom_text(
-    data = elements,
-    aes(x = 1.6, y = y, label = element, color = factor(id)),
+    data = layers[x, ],
+    aes(x = 1.6, y = y, label = name,
+        color = factor(id, levels = seq_len(number_of_shapes))),
     hjust = 0, vjust = -0.2, size = 6, family = "Poppins SemiBold"
     ) +
-  scale_fill_manual(values = MetBrewer::met.brewer("Moreau"),
+  scale_fill_manual(values = color_mapping,
                     aesthetics = c("fill", "color")) +
   guides(color = "none", fill = "none") +
   theme_void() +
@@ -197,8 +204,45 @@ ggplot() +
     plot.background = element_rect(color = "transparent", fill = "transparent"),
     panel.background = element_rect(color = "transparent", fill = "transparent")
   )
+}
 
 ```
+
+::: {.r-stack}
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE, message=FALSE, fig.height=6.5, out.height="100%", dev="png", dev.args=list(bg="transparent")}
+reveal_gg_layers(1)
+```
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE, message=FALSE, fig.height=6.5, out.height="100%", dev="png", dev.args=list(bg="transparent"), class="fragment"}
+reveal_gg_layers(2)
+```
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE, message=FALSE, fig.height=6.5, out.height="100%", dev="png", dev.args=list(bg="transparent"), class="fragment"}
+reveal_gg_layers(3)
+```
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE, message=FALSE, fig.height=6.5, out.height="100%", dev="png", dev.args=list(bg="transparent"), class="fragment"}
+reveal_gg_layers(4)
+```
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE, message=FALSE, fig.height=6.5, out.height="100%", dev="png", dev.args=list(bg="transparent"), class="fragment"}
+reveal_gg_layers(5)
+```
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE, message=FALSE, fig.height=6.5, out.height="100%", dev="png", dev.args=list(bg="transparent"), class="fragment"}
+reveal_gg_layers(6)
+```
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE, message=FALSE, fig.height=6.5, out.height="100%", dev="png", dev.args=list(bg="transparent"), class="fragment"}
+reveal_gg_layers(7)
+```
+
+
+:::
+
+
+
 
 
 
