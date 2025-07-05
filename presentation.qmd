@@ -1,28 +1,92 @@
 ---
-title: "Customize graphs with R and ggplot2"
+title: "Customize graphs<br>with R and ggplot2"
 subtitle: "Data Visualization Meetup Munich"
 format: 
   revealjs:
     logo: theme/logo.png
-    width: 90%
+    width: 100%
     progress: true
     theme: [theme/theme.scss]
     transition: fade
     transition-speed: fast
+    auto-play-media: true
     footer: "Data Visualization Meetup Munich | July 8th, 2025 | Ansgar Wolsing"
     title-slide-attributes:
-      data-background-image: theme/vertical-bar.png
-      data-background-size: 12% 100%
-      data-background-position: 100% 98%, 100% 98%
+      data-background-image: theme/background-image.png
+      data-background-size: 100%, cover
+      data-background-position: 0%, 100%
 ---
 
 # 30DayChartChallenge
 
-## ![Chart](media/09-all-too-well.png){height=660px}{.center}
+## Notes
 
-##
+-   Intro Challenge
+-   Intro ggplot2
+-   Intro Why charts with code?
 
-<div class="chart-title-only"></div>
+## What happened so far
+
+```{css}
+div.video-js {
+  background-color: transparent
+}
+```
+
+{{< video media/slides-dataviz-meeting-muc-2024.mov width="auto" height="620" aspect-ratio="4x3" autoplay muted loop controlBar={false} >}}
+
+## There's a continuum of dataviz tools
+
+![](media/charting-continuum.png){.center height="500px"}
+
+<div><p style="font-size: 14pt; font-style:italic">Source: Schwabish (2021)</p></div>
+
+
+## Why creating charts with code?
+
+```{css}
+div.column-with-bg {
+  background-color: rgb(0, 0, 0, 0.08);
+  font-size: 0.8em;
+  margin: 8px;
+  padding: 8px;
+  border-radius: 7px;
+  width: 30%;
+  height: 350px;
+}
+```
+
+
+::: {.columns}
+
+::: {.column .column-with-bg}
+**Reproducibility**
+
+Every step is explicit and repeatable
+:::
+
+::: {.column .column-with-bg}
+**Customization**
+
+fine-tune, create non-standard charts,
+share standards programmatically
+:::
+
+::: {.column .column-with-bg}
+**Automation**
+
+create functions for repeated tasks
+:::
+
+:::
+
+
+## ![Chart](media/09-all-too-well.png){height="660px"} {.center}
+
+## 
+
+::: chart-title-only
+:::
 
 ```{css}
 
@@ -39,10 +103,10 @@ format:
 
 ```
 
+##  {transition="fade"}
 
-## {transition=fade}
-
-<div class="chart-first-decade-with-title"></div>
+::: chart-first-decade-with-title
+:::
 
 ```{css}
 
@@ -59,10 +123,10 @@ format:
 
 ```
 
-
 ## 
 
-<div class="chart-first-decade"></div>
+::: chart-first-decade
+:::
 
 ```{css}
 
@@ -79,7 +143,64 @@ format:
 
 ```
 
+
 # The code
+
+## ggplot2 at a glance
+
+<div style="margin-bottom: -150px !important; padding-bottom: 0px !important">
+"gg" = Grammar of Graphics (Wilkinson 2005)
+</div>
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE, message=FALSE, fig.height=6.5, out.height="100%", dev="png", dev.args=list(bg="transparent")}
+library(tidyverse)
+library(ggforce)
+
+shape <- data.frame(
+  x = c(0, 1, 1.5, 0.5, 0),
+  y = c(1, 1, 0, 0, 1)
+)
+
+number_of_shapes <- 7
+overlap_factor <- 0.3
+
+shapes <- tibble(
+  id = seq_len(number_of_shapes),
+  shape = rep(list(shape), number_of_shapes)
+) |> 
+  unnest(cols = shape) |> 
+  mutate(y2 = y + (id - 1) * (1 - overlap_factor))
+  
+elements <- data.frame(
+  id = seq_len(number_of_shapes),
+  y = (seq_len(number_of_shapes) - 1) * (1 - overlap_factor),
+  element = c("Data", "Aesthetics", "Layers", "Scales", "Facets", 
+              "Coordinate system", "Theme")
+)
+
+ggplot() +
+  geom_shape(
+    data = shapes, 
+    aes(x = x, y = y2, fill = factor(id)),
+    alpha = 0.6) +
+  coord_cartesian(xlim = c(0, 2.5), ylim = c(0, number_of_shapes + 1)) +
+  geom_text(
+    data = elements,
+    aes(x = 1.6, y = y, label = element, color = factor(id)),
+    hjust = 0, vjust = -0.2, size = 6, family = "Poppins SemiBold"
+    ) +
+  scale_fill_manual(values = MetBrewer::met.brewer("Moreau"),
+                    aesthetics = c("fill", "color")) +
+  guides(color = "none", fill = "none") +
+  theme_void() +
+  theme(
+    plot.background = element_rect(color = "transparent", fill = "transparent"),
+    panel.background = element_rect(color = "transparent", fill = "transparent")
+  )
+
+```
+
+
 
 
 ## Load the required libraries and the dataset
@@ -87,7 +208,6 @@ format:
 ```{r, echo=TRUE, cache=FALSE, `code-line-numbers`="1,2,3"}
 
 library(tidyverse)
-# library(glue)
 library(ggtext)
 
 tracks_df <- read_rds(file.path("data", "no1-tracks-prepared.rds"))
@@ -96,10 +216,9 @@ tracks_df <- read_rds(file.path("data", "no1-tracks-prepared.rds"))
 
 `library()` loads R packages into the R session.
 
+## Load the required libraries and the dataset
 
-## Load the required libraries and the dataset 
-
-```{r, echo=TRUE, cache=FALSE, `code-line-numbers`="5"}
+```{r, echo=TRUE, cache=TRUE, `code-line-numbers`="5"}
 
 library(tidyverse)
 library(glue)
@@ -109,12 +228,11 @@ tracks_df <- read_rds(file.path("data", "no1-tracks-prepared.rds"))
 
 ```
 
-`read_rds()` from the `readr` package (part of the `tidverse` meta package) reads an R object which was generated in a separate R script. 
+`read_rds()` from the `readr` package (part of the `tidverse` meta package) reads an R object which was generated in a separate R script.
 
+## Load the required libraries and the dataset
 
-## Load the required libraries and the dataset 
-
-```{r, echo=TRUE, cache=FALSE, `code-line-numbers`="5"}
+```{r, echo=TRUE, cache=TRUE, `code-line-numbers`="5"}
 
 library(tidyverse)
 library(glue)
@@ -137,17 +255,17 @@ tracks_df |>
 
 ```
 
-
-
-
 ## Data preparation
 
-Prepare a dataframe with the longest songs per decade. We'll need these for the labels.
+Prepare a dataframe with the longest songs per decade.
+We'll need these for the labels.
 
-```{r, echo=TRUE, cache=FALSE}
+```{r, echo=TRUE, cache=TRUE}
 
 # identify songs which are the longest in their decade
+start_year <- 1960
 df_longest_no1_per_decade <- tracks_df |>
+  filter(year(first_no1_date) >= start_year) |> 
   group_by(decade) %>% 
   slice_max(order_by = duration_s, n = 1, with_ties = TRUE) |>
   ungroup() |>
@@ -158,10 +276,10 @@ df_longest_no1_per_decade <- tracks_df |>
                    label))
 ```
 
-
 ## Data preparation
 
-Prepare a dataframe with the longest songs per decade. We'll need these for the labels.
+Prepare a dataframe with the longest songs per decade.
+We'll need these for the labels.
 
 ```{r, echo=FALSE}
 df_longest_no1_per_decade |> 
@@ -177,10 +295,9 @@ df_longest_no1_per_decade |>
 
 ```
 
-## Our first visualization of the data {auto-animate=true} 
+## Our first visualization of the data {auto-animate="true"}
 
-::: {.columns}
-
+::: columns
 ::: {.column width="35%"}
 ```{r, echo=TRUE, eval=FALSE}
 ggplot(
@@ -190,8 +307,9 @@ ggplot(
 ```
 :::
 
-::: {.column width="65%" .fragment}
-<br><br><br>
+::: {.column .fragment width="65%"}
+<br><br>
+
 ```{r, echo=FALSE, fig.width=8, fig.height=4.5}
 ggplot(
   data = df_longest_no1_per_decade,
@@ -199,14 +317,21 @@ ggplot(
   geom_col()
 ```
 :::
+:::
 
 :::
 
+```{r, echo=FALSE, fig.width=8, fig.height=4.5}
+ggplot(
+  data = df_longest_no1_per_decade,
+  mapping = aes(x = label, y = duration_s)) +
+  geom_col() +
+  theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust = 1))
+```
 
-## Dataviz 101 - *Rotate that damn plot!* {auto-animate=true}
+## Dataviz 101 - *Rotate that damn plot!* {auto-animate="true"}
 
-::: {.columns}
-
+::: columns
 ::: {.column width="35%"}
 ```{r, echo=TRUE, eval=FALSE, `code-line-numbers`="3"}
 ggplot(
@@ -217,7 +342,8 @@ ggplot(
 :::
 
 ::: {.column width="65%"}
-<br><br><br>
+<br><br>
+
 ```{r, echo=FALSE, fig.width=8, fig.height=4.5}
 ggplot(
   data = df_longest_no1_per_decade,
@@ -225,18 +351,355 @@ ggplot(
   geom_col()
 ```
 :::
-
 :::
 
+## We haven't mentioned the decades so far
 
-## Next
+```{css}
+/*.reveal pre.sourceCode code {
+	width: 700px;
+}*/
+```
 
-```{r, echo=FALSE, fig.width=8, fig.height=4.5}
-ggplot(
+::: columns
+::: {.column width="50%"}
+```{r, echo=TRUE, include=TRUE}
+p <- ggplot(
   data = df_longest_no1_per_decade,
   mapping = aes(x = duration_s, y = label)) +
   geom_col() +
-  facet_wrap(vars(decade), ncol = 1, scales = "free_y", strip.position = "left")
+  facet_wrap(
+    vars(decade),
+    ncol = 1, scales = "free_y",
+    strip.position = "left") +
+  theme(
+    strip.text.y.left = element_text(angle = 0))
+```
+:::
+
+::: {.column width="50%"}
+```{r, echo=FALSE, fig.width=6, fig.height=6}
+p
+```
+:::
+:::
+
+## Apply a theme {auto-animate="true"}
+
+::: columns
+::: {.column width="50%"}
+```{r, echo=TRUE, include=TRUE, `code-line-numbers`="9-12"}
+p <- ggplot(
+  data = df_longest_no1_per_decade,
+  mapping = aes(x = duration_s, y = label)) +
+  geom_col() +
+  facet_wrap(
+    vars(decade),
+    ncol = 1, scales = "free_y",
+    strip.position = "left") +
+  theme_minimal() +
+  theme(
+    strip.text.y.left = element_text(angle = 0))
 ```
 
+<div style="font-size: 0.6em;margin-top: 55px">
+{ggplot2} contains a couple of different themes out of the box that you can apply to your plot, e.g.:
+
+* `theme_bw()`
+* `theme_light()`
+
+\+ additional packages available
+</div>
+:::
+
+::: {.column width="50%"}
+```{r, echo=FALSE, fig.width=6, fig.height=6}
+p
+```
+:::
+:::
+
+## Switch the song titles to the right {auto-animate="true"}
+
+::: columns
+::: {.column width="50%"}
+```{r, echo=TRUE, include=TRUE, `code-line-numbers`="5"}
+p <- ggplot(
+  data = df_longest_no1_per_decade,
+  mapping = aes(x = duration_s, y = label)) +
+  geom_col() +
+  scale_y_discrete(position = "right") +
+  facet_wrap(
+    vars(decade),
+    ncol = 1, scales = "free_y",
+    strip.position = "left") +
+  theme_minimal() +
+  theme(
+    strip.text.y.left = element_text(angle = 0))
+```
+:::
+
+::: {.column width="50%"}
+```{r, echo=FALSE, fig.width=6, fig.height=6}
+p
+```
+:::
+:::
+
+## Chart title and labels {auto-animate="true"}
+
+::: columns
+::: {.column width="50%"}
+```{r, echo=TRUE, include=TRUE, `code-line-numbers`="10-15"}
+p <- ggplot(
+  data = df_longest_no1_per_decade,
+  mapping = aes(x = duration_s, y = label)) +
+  geom_col() +
+  scale_y_discrete(position = "right") +
+  facet_wrap(
+    vars(decade),
+    ncol = 1, scales = "free_y",
+    strip.position = "left") +
+  labs(
+    title = "Longest number one song per decade",
+    subtitle = "US Billboard Hot 100",
+    x = "Song duration (seconds)",
+    y = NULL
+  ) +
+  theme_minimal() +
+  theme(
+    strip.text.y.left = element_text(angle = 0))
+```
+:::
+
+::: {.column width="50%"}
+```{r, echo=FALSE, fig.width=6, fig.height=6}
+p
+```
+:::
+:::
+
+## More theming {auto-animate="true"}
+
+::: columns
+::: {.column width="50%"}
+```{r, echo=TRUE, include=TRUE}
+p <- p +
+  labs(
+    title = "Longest number one song per decade",
+    subtitle = "US Billboard Hot 100,
+      song duration in seconds",
+    x = NULL, y = NULL
+  ) +
+  theme_minimal(
+    base_family = "Poppins", base_size = 14) +
+  theme(
+    strip.text.y.left = element_text(angle = 0),
+    plot.title = element_text(face = "bold"),
+    plot.subtitle = element_markdown(),
+    plot.title.position = "plot",
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    panel.spacing.y = unit(0, "mm"),
+    axis.text.y.right = element_text(size = 12)
+  )
+```
+:::
+
+::: {.column width="50%"}
+```{r, echo=FALSE, fig.width=6.5, fig.height=6}
+p
+```
+:::
+:::
+
+
+# What if we wanted to show the distribution?
+
+
+## Boxplots?
+
+::: columns
+::: {.column width="50%"}
+```{r, echo=TRUE, include=TRUE}
+p_base <- ggplot(
+  data = tracks_df,
+  mapping = aes(
+    x = duration_s, y = factor(decade),
+    group = decade)) +
+  labs(
+    title = "Longest number one song per decade",
+    subtitle = "US Billboard Hot 100,
+      song duration in seconds",
+    x = NULL, y = NULL
+  ) +
+  theme_minimal(
+    base_family = "Poppins", base_size = 14) +
+  theme(
+    strip.text.y.left = element_text(angle = 0),
+    plot.title = element_text(face = "bold"),
+    plot.subtitle = element_markdown(),
+    plot.title.position = "plot",
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    panel.spacing.y = unit(0, "mm"),
+    axis.text.y.right = element_text(size = 12)
+  )
+
+p <- p_base + 
+  geom_boxplot()
+```
+:::
+
+::: {.column width="50%"}
+```{r, echo=FALSE, fig.width=6.5, fig.height=6}
+p
+```
+:::
+:::
+
+
+## Music? Violins! 🎻
+
+::: columns
+::: {.column width="50%"}
+```{r, echo=TRUE, include=TRUE}
+p <- p_base + 
+  geom_violin()
+```
+:::
+
+::: {.column width="50%"}
+```{r, echo=FALSE, fig.width=6.5, fig.height=6}
+p
+```
+:::
+:::
+
+## Music? Violins! 🎻  {auto-animate="true"}
+
+::: columns
+::: {.column width="50%"}
+```{r, echo=TRUE, include=TRUE, `code-line-numbers`="3-4"}
+p <- p_base + 
+  geom_violin() +
+  stat_summary(fun = mean,
+               geom = "point")
+```
+
+<div style="font-size: 0.6em;margin-top: 55px">
+`stat_summary()` computes an aggregate value and plots it as a given geom
+</div>
+:::
+
+::: {.column width="50%"}
+```{r, echo=FALSE, fig.width=6.5, fig.height=6}
+p
+```
+:::
+:::
+
+
+
+## Density-interval combo ("halfeye")?  {auto-animate="true"}
+
+::: columns
+::: {.column width="50%"}
+```{r, echo=TRUE, include=TRUE}
+library(ggdist)
+
+p <- p_base + 
+  stat_halfeye() 
+```
+
+<div style="font-size: 0.6em;margin-top: 55px">
+{ggdist} provides functions which extended {ggplot2} to visualize...
+
+- distributions
+- uncertainty
+</div>
+
+:::
+
+::: {.column width="50%"}
+```{r, echo=FALSE, fig.width=6.5, fig.height=6}
+p
+```
+:::
+:::
+
+
+## Show every single data point?  {auto-animate="true"}
+
+::: columns
+::: {.column width="50%"}
+```{r, echo=TRUE, include=TRUE}
+p <- p_base + 
+  stat_dots(
+    dotsize = 1.2, color = "grey24"
+  ) 
+```
+
+<div style="font-size: 0.6em;margin-top: 55px">
+`stat_dots()` is also from the {ggdist} package
+</div>
+
+:::
+
+::: {.column width="50%"}
+```{r, echo=FALSE, fig.width=6.5, fig.height=6}
+p
+```
+:::
+:::
+
+## Where's <s>Waldo</s><span style="color: #B14625">Taylor?</span>  {auto-animate="true"}
+
+::: columns
+::: {.column width="50%"}
+```{r, echo=TRUE, include=TRUE}
+library(ggdist)
+
+highlight_color <- "#B14625"
+
+p <- p_base + 
+  stat_dots(
+    dotsize = 1.2,
+    color = "grey24"
+  ) +
+  geom_point(
+    data = filter(
+      tracks_df, 
+      id == "5enxwA8aAbwZbf5qCHORXi"),
+    size = 9, shape = 21, stroke = 2,
+    fill = "transparent",
+    color = highlight_color
+  )
+```
+:::
+
+::: {.column width="50%"}
+```{r, echo=FALSE, fig.width=6.5, fig.height=6}
+p
+```
+:::
+:::
+
+
+
+
+## Resources
+
+<div style="font-size: 0.6em">
+- Talk at Data Visualization Meetup Munich March 2024:<br>
+[github.com/bydata/talk-data-visualization-munich-20240305](https://github.com/bydata/talk-data-visualization-munich-20240305)
+- Full R code:<br>
+[github.com/bydata/30DayChartChallenge/tree/main/2022/09](https://github.com/bydata/30DayChartChallenge/tree/main/2022/09)
+- {ggplot2} documentation:<br>
+[ggplot2.tidyverse.org](https://ggplot2.tidyverse.org/)
+</div>
+
+## Contact
+
+![](media/qr-code-linkedin.png){width="500px"}
 
