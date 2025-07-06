@@ -1,5 +1,5 @@
 ---
-title: "Customize graphs<br>with R and ggplot2"
+title: "Customizing graphs<br>with R and ggplot2"
 subtitle: "Data Visualization Meetup Munich"
 format: 
   revealjs:
@@ -17,14 +17,6 @@ format:
       data-background-position: 0%, 100%
 ---
 
-# 30DayChartChallenge
-
-## Notes
-
--   Intro Challenge
--   Intro ggplot2
--   Intro Why charts with code?
-
 ## What happened so far
 
 ```{css}
@@ -39,8 +31,11 @@ div.video-js {
 
 ![](media/charting-continuum.png){.center height="500px"}
 
-<div><p style="font-size: 14pt; font-style:italic">Source: Schwabish (2021)</p></div>
-
+<div>
+<p style="font-size: 14pt; font-style:italic">
+Source: Schwabish (2021)
+</p>
+</div>
 
 ## Why creating charts with code?
 
@@ -56,9 +51,7 @@ div.column-with-bg {
 }
 ```
 
-
-::: {.columns}
-
+::: columns
 ::: {.column .column-with-bg}
 **Reproducibility**
 
@@ -68,8 +61,7 @@ Every step is explicit and repeatable
 ::: {.column .column-with-bg}
 **Customization**
 
-fine-tune, create non-standard charts,
-share standards programmatically
+fine-tune, create non-standard charts, share standards programmatically
 :::
 
 ::: {.column .column-with-bg}
@@ -77,9 +69,7 @@ share standards programmatically
 
 create functions for repeated tasks
 :::
-
 :::
-
 
 ## ![Chart](media/09-all-too-well.png){height="660px"} {.center}
 
@@ -123,34 +113,18 @@ create functions for repeated tasks
 
 ```
 
-## 
 
-::: chart-first-decade
-:::
+## Inspiration
 
-```{css}
-
-.chart-first-decade {
-    width: 100%; 
-    padding-bottom: 17%; 
-    background-image: url('media/09-all-too-well.png'); /
-    background-repeat: no-repeat;
-    background-size: 100% auto; 
-    background-position: center 20%;  
-    overflow: hidden;
-    border: 1px solid #ccc; 
-}
-
-```
-
+![](images/clipboard-3275579236.png){height="600px"}
 
 # The code
 
 ## ggplot2 at a glance
 
-<div style="margin-bottom: -150px !important; padding-bottom: 0px !important">
+::: {style="margin-bottom: -150px !important; padding-bottom: 0px !important"}
 Implementation of the Grammar of Graphics (Wilkinson 2005) in R ("gg")
-</div>
+:::
 
 ```{r, echo=FALSE}
 library(tidyverse)
@@ -208,15 +182,13 @@ reveal_gg_layers <- function(x) {
 
 ```
 
-
 ## ggplot2 at a glance
 
-<div style="margin-bottom: -150px !important; padding-bottom: 0px !important">
+::: {style="margin-bottom: -150px !important; padding-bottom: 0px !important"}
 Implementation of the Grammar of Graphics (Wilkinson 2005) in R ("gg")
-</div>
+:::
 
-::: {.r-stack}
-
+::: r-stack
 ```{r, echo=FALSE, include=TRUE, warning=FALSE, message=FALSE, fig.height=6.5, out.height="100%", dev="png", dev.args=list(bg="transparent")}
 reveal_gg_layers(1)
 ```
@@ -244,10 +216,7 @@ reveal_gg_layers(6)
 ```{r, echo=FALSE, include=TRUE, warning=FALSE, message=FALSE, fig.height=6.5, out.height="100%", dev="png", dev.args=list(bg="transparent"), class="fragment"}
 reveal_gg_layers(7)
 ```
-
-
 :::
-
 
 ## Load the required libraries and the dataset
 
@@ -276,7 +245,7 @@ tracks_df <- read_rds(file.path("data", "no1-tracks-prepared.rds"))
 
 ```
 
-`read_rds()` from the `readr` package (part of the `tidverse` meta package) reads an R object which was generated in a separate R script.
+`read_rds()` from the `readr` package (part of the `tidverse` meta package) reads an R dataframe which was generated in a separate R script.
 
 ## Load the required libraries and the dataset
 
@@ -305,12 +274,9 @@ tracks_df |>
 
 ## Data preparation
 
-Prepare a dataframe with the longest songs per decade.
-We'll need these for the labels.
+Prepare a dataframe with the longest songs per decade. We'll need these for the labels.
 
 ```{r, echo=TRUE, cache=TRUE}
-
-# identify songs which are the longest in their decade
 start_year <- 1960
 df_longest_no1_per_decade <- tracks_df |>
   filter(year(first_no1_date) >= start_year) |> 
@@ -318,21 +284,22 @@ df_longest_no1_per_decade <- tracks_df |>
   slice_max(order_by = duration_s, n = 1, with_ties = TRUE) |>
   ungroup() |>
   mutate(
-    label = str_replace(artist_song, " - ", "\n"),
-    label = ifelse(str_detect(label, "Taylor Swift"), 
-                   "Taylor Swift\nAll Too Well (Taylor's Version)", 
-                   label))
+    label = ifelse(
+      str_detect(artist_song, "Taylor Swift"), 
+      "Taylor Swift - All Too Well",
+      artist_song),
+    label_wrapped = str_replace(
+      label, " - ", "\n"))
 ```
 
 ## Data preparation
 
-Prepare a dataframe with the longest songs per decade.
-We'll need these for the labels.
+Prepare a dataframe with the longest songs per decade. We'll need these for the labels.
 
 ```{r, echo=FALSE}
 df_longest_no1_per_decade |> 
   select(-c(id, href)) |> 
-  head() |> 
+  head(10) |> 
   gt::gt() |> 
   gt::cols_align("left", artist_song) |> 
   gt::tab_options(
@@ -346,6 +313,7 @@ df_longest_no1_per_decade |>
 ## Our first visualization of the data {auto-animate="true"}
 
 ::: columns
+
 ::: {.column width="35%"}
 ```{r, echo=TRUE, eval=FALSE}
 ggplot(
@@ -358,33 +326,37 @@ ggplot(
 ::: {.column .fragment width="65%"}
 <br><br>
 
-```{r, echo=FALSE, fig.width=8, fig.height=4.5}
+::: r-stack
+```{r, echo=FALSE, fig.width=8, fig.height=4.5, out.height="100%", dev="png", dev.args=list(bg="transparent"), class="fragment"}
 ggplot(
   data = df_longest_no1_per_decade,
-  mapping = aes(x = label, y = duration_s)) +
+  mapping = aes(x = label_wrapped,
+                y = duration_s)) +
   geom_col()
 ```
-:::
-:::
 
-:::
-
-```{r, echo=FALSE, fig.width=8, fig.height=4.5}
+```{r, echo=FALSE, fig.width=8, fig.height=4.5, out.height="100%", dev="png", dev.args=list(bg="transparent"), class="fragment"}
 ggplot(
   data = df_longest_no1_per_decade,
-  mapping = aes(x = label, y = duration_s)) +
+  mapping = aes(x = label_wrapped,
+                y = duration_s)) +
   geom_col() +
   theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust = 1))
 ```
+:::
+
+:::
+:::
 
 ## Dataviz 101 - *Rotate that damn plot!* {auto-animate="true"}
 
 ::: columns
 ::: {.column width="35%"}
-```{r, echo=TRUE, eval=FALSE, `code-line-numbers`="3"}
+```{r, echo=TRUE, eval=FALSE, `code-line-numbers`="3-4"}
 ggplot(
   data = df_longest_no1_per_decade,
-  mapping = aes(x = duration_s, y = label)) +
+  mapping = aes(x = duration_s, 
+                y = label_wrapped)) +
   geom_col()
 ```
 :::
@@ -395,7 +367,8 @@ ggplot(
 ```{r, echo=FALSE, fig.width=8, fig.height=4.5}
 ggplot(
   data = df_longest_no1_per_decade,
-  mapping = aes(x = duration_s, y = label)) +
+  mapping = aes(x = duration_s,
+                y = label_wrapped)) +
   geom_col()
 ```
 :::
@@ -403,25 +376,18 @@ ggplot(
 
 ## We haven't mentioned the decades so far
 
-```{css}
-/*.reveal pre.sourceCode code {
-	width: 700px;
-}*/
-```
-
 ::: columns
 ::: {.column width="50%"}
-```{r, echo=TRUE, include=TRUE}
+```{r, echo=TRUE, include=TRUE, `code-line-numbers`="6-9"}
 p <- ggplot(
   data = df_longest_no1_per_decade,
-  mapping = aes(x = duration_s, y = label)) +
+  mapping = aes(x = duration_s,
+                y = label_wrapped)) +
   geom_col() +
   facet_wrap(
     vars(decade),
     ncol = 1, scales = "free_y",
-    strip.position = "left") +
-  theme(
-    strip.text.y.left = element_text(angle = 0))
+    strip.position = "left")
 ```
 :::
 
@@ -436,28 +402,27 @@ p
 
 ::: columns
 ::: {.column width="50%"}
-```{r, echo=TRUE, include=TRUE, `code-line-numbers`="9-12"}
+```{r, echo=TRUE, include=TRUE, `code-line-numbers`="9"}
 p <- ggplot(
   data = df_longest_no1_per_decade,
-  mapping = aes(x = duration_s, y = label)) +
+  mapping = aes(x = duration_s,
+                y = label_wrapped)) +
   geom_col() +
   facet_wrap(
     vars(decade),
     ncol = 1, scales = "free_y",
     strip.position = "left") +
-  theme_minimal() +
-  theme(
-    strip.text.y.left = element_text(angle = 0))
+  theme_minimal()
 ```
 
-<div style="font-size: 0.6em;margin-top: 55px">
+::: {style="font-size: 0.6em;margin-top: 55px"}
 {ggplot2} contains a couple of different themes out of the box that you can apply to your plot, e.g.:
 
-* `theme_bw()`
-* `theme_light()`
+-   `theme_bw()`
+-   `theme_light()`
 
 \+ additional packages available
-</div>
+:::
 :::
 
 ::: {.column width="50%"}
@@ -471,19 +436,18 @@ p
 
 ::: columns
 ::: {.column width="50%"}
-```{r, echo=TRUE, include=TRUE, `code-line-numbers`="5"}
+```{r, echo=TRUE, include=TRUE, `code-line-numbers`="6"}
 p <- ggplot(
   data = df_longest_no1_per_decade,
-  mapping = aes(x = duration_s, y = label)) +
+  mapping = aes(x = duration_s,
+                y = label_wrapped)) +
   geom_col() +
   scale_y_discrete(position = "right") +
   facet_wrap(
     vars(decade),
     ncol = 1, scales = "free_y",
     strip.position = "left") +
-  theme_minimal() +
-  theme(
-    strip.text.y.left = element_text(angle = 0))
+  theme_minimal()
 ```
 :::
 
@@ -498,10 +462,11 @@ p
 
 ::: columns
 ::: {.column width="50%"}
-```{r, echo=TRUE, include=TRUE, `code-line-numbers`="10-15"}
+```{r, echo=TRUE, include=TRUE, `code-line-numbers`="11-16"}
 p <- ggplot(
   data = df_longest_no1_per_decade,
-  mapping = aes(x = duration_s, y = label)) +
+  mapping = aes(x = duration_s, 
+                y = label_wrapped)) +
   geom_col() +
   scale_y_discrete(position = "right") +
   facet_wrap(
@@ -510,13 +475,11 @@ p <- ggplot(
     strip.position = "left") +
   labs(
     title = "Longest number one song per decade",
-    subtitle = "US Billboard Hot 100",
-    x = "Song duration (seconds)",
+    subtitle = "US Billboard Hot 100, song duration (seconds)",
+    x = NULL,
     y = NULL
   ) +
-  theme_minimal() +
-  theme(
-    strip.text.y.left = element_text(angle = 0))
+  theme_minimal()
 ```
 :::
 
@@ -533,16 +496,11 @@ p
 ::: {.column width="50%"}
 ```{r, echo=TRUE, include=TRUE}
 p <- p +
-  labs(
-    title = "Longest number one song per decade",
-    subtitle = "US Billboard Hot 100,
-      song duration in seconds",
-    x = NULL, y = NULL
-  ) +
   theme_minimal(
     base_family = "Poppins", base_size = 14) +
   theme(
-    strip.text.y.left = element_text(angle = 0),
+    strip.text.y.left = element_text(
+      angle = 0, family = "Roboto Mono"),
     plot.title = element_text(face = "bold"),
     plot.subtitle = element_markdown(),
     plot.title.position = "plot",
@@ -561,15 +519,11 @@ p
 :::
 :::
 
-
 # What if we wanted to show the distribution?
-
 
 ## Boxplots?
 
-::: columns
-::: {.column width="50%"}
-```{r, echo=TRUE, include=TRUE}
+```{r, echo=FALSE}
 p_base <- ggplot(
   data = tracks_df,
   mapping = aes(
@@ -590,10 +544,13 @@ p_base <- ggplot(
     plot.title.position = "plot",
     panel.grid.major.y = element_blank(),
     panel.grid.minor.y = element_blank(),
-    panel.spacing.y = unit(0, "mm"),
-    axis.text.y.right = element_text(size = 12)
+    axis.text.y = element_text(family = "Roboto Mono")
   )
+```
 
+::: columns
+::: {.column width="50%"}
+```{r, echo=TRUE, include=TRUE}
 p <- p_base + 
   geom_boxplot()
 ```
@@ -605,7 +562,6 @@ p
 ```
 :::
 :::
-
 
 ## Music? Violins! 🎻
 
@@ -624,7 +580,7 @@ p
 :::
 :::
 
-## Music? Violins! 🎻  {auto-animate="true"}
+## Music? Violins! 🎻 {auto-animate="true"}
 
 ::: columns
 ::: {.column width="50%"}
@@ -635,9 +591,9 @@ p <- p_base +
                geom = "point")
 ```
 
-<div style="font-size: 0.6em;margin-top: 55px">
+::: {style="font-size: 0.6em;margin-top: 55px"}
 `stat_summary()` computes an aggregate value and plots it as a given geom
-</div>
+:::
 :::
 
 ::: {.column width="50%"}
@@ -647,9 +603,7 @@ p
 :::
 :::
 
-
-
-## Density-interval combo ("halfeye")?  {auto-animate="true"}
+## Density-interval combo ("halfeye")? {auto-animate="true"}
 
 ::: columns
 ::: {.column width="50%"}
@@ -660,13 +614,12 @@ p <- p_base +
   stat_halfeye() 
 ```
 
-<div style="font-size: 0.6em;margin-top: 55px">
+::: {style="font-size: 0.6em;margin-top: 55px"}
 {ggdist} provides functions which extended {ggplot2} to visualize...
 
-- distributions
-- uncertainty
-</div>
-
+-   distributions
+-   uncertainty
+:::
 :::
 
 ::: {.column width="50%"}
@@ -676,8 +629,7 @@ p
 :::
 :::
 
-
-## Show every single data point?  {auto-animate="true"}
+## Show every single data point? {auto-animate="true"}
 
 ::: columns
 ::: {.column width="50%"}
@@ -688,10 +640,9 @@ p <- p_base +
   ) 
 ```
 
-<div style="font-size: 0.6em;margin-top: 55px">
+::: {style="font-size: 0.6em;margin-top: 55px"}
 `stat_dots()` is also from the {ggdist} package
-</div>
-
+:::
 :::
 
 ::: {.column width="50%"}
@@ -701,7 +652,7 @@ p
 :::
 :::
 
-## Where's <s>Waldo</s><span style="color: #B14625">Taylor?</span>  {auto-animate="true"}
+## Where's <s>Waldo</s>[Taylor?]{style="color: #B14625"} {auto-animate="true"}
 
 ::: columns
 ::: {.column width="50%"}
@@ -709,6 +660,7 @@ p
 library(ggdist)
 
 highlight_color <- "#B14625"
+track_id <- "5enxwA8aAbwZbf5qCHORXi"
 
 p <- p_base + 
   stat_dots(
@@ -718,7 +670,7 @@ p <- p_base +
   geom_point(
     data = filter(
       tracks_df, 
-      id == "5enxwA8aAbwZbf5qCHORXi"),
+      id == track_id),
     size = 9, shape = 21, stroke = 2,
     fill = "transparent",
     color = highlight_color
@@ -732,7 +684,6 @@ p
 ```
 :::
 :::
-
 
 ## Like the Economist (2025)
 
@@ -761,7 +712,7 @@ p <- tracks_df |>
   geom_point(
     data = ~filter(
       ., 
-      id == "5enxwA8aAbwZbf5qCHORXi"),
+      id == track_id),
     size = 3, shape = 21, stroke = 1,
     fill = "#F04629",
     color = "black"
@@ -769,7 +720,7 @@ p <- tracks_df |>
   geom_richtext(
     data = ~filter(
       ., 
-      id == "5enxwA8aAbwZbf5qCHORXi"),
+      id == track_id),
     aes(
     label = "<span style='
     font-family: 
@@ -819,7 +770,6 @@ p
 :::
 :::
 
-
 ## Finally, the plot
 
 ::: columns
@@ -842,7 +792,6 @@ p
 ```
 :::
 :::
-
 
 ## Style the dots
 
@@ -889,28 +838,259 @@ p <- p +
 :::
 
 ::: {.column width="50%"}
-```{r, echo=FALSE, fig.width=6.5, fig.height=6}
+```{r, echo=FALSE, fig.width=6.5, fig.height=7}
 p
 ```
 :::
 :::
 
+## Add the theme
 
+::: columns
+::: {.column width="50%"}
+```{r, echo=TRUE, include=TRUE}
+p <- p +
+  theme_minimal(
+    base_family = "Raleway",
+    base_size = 13) +
+  theme(
+  plot.background = element_rect(
+    color = "white", fill = "white"),
+  panel.grid = element_blank(),
+  axis.title.y = element_blank(),
+  axis.text.y = element_blank(),
+  axis.ticks.x = element_line(
+    color = "grey60", linewidth = 0.3),
+  text = element_text(
+    color = "grey35"),
+  plot.title = element_markdown(
+    color = "black", 
+    family = "Raleway SemiBold", size = 18),
+  plot.subtitle = element_textbox_simple(
+    margin = margin(t = 6, b = 6), 
+    width = unit(1, "npc"), hjust = 0
+  ),
+  plot.caption = element_markdown()
+)
+
+```
+:::
+
+::: {.column width="50%"}
+```{r, echo=FALSE, fig.width=6.5, fig.height=7}
+p
+```
+:::
+:::
+
+## Add annotations for the decades
+
+::: columns
+::: {.column width="50%"}
+```{r, echo=TRUE, include=TRUE}
+p <- p +
+  # Labels for decades
+  annotate(
+    "text",
+    x = seq_along(seq(1950, 2020, 10)) + 0.3,
+    y = 30, 
+    label = paste0(seq(1950, 2020, 10), "s"),
+    family = "Raleway SemiBold", 
+    color = "grey50", size = 6,
+    hjust = 0
+  )
+```
+:::
+
+::: {.column width="50%\""}
+```{r, echo=FALSE, fig.width=6.5, fig.height=7}
+p
+```
+:::
+:::
+
+## Format the x-axis
+
+::: columns
+::: {.column width="50%"}
+```{r, echo=TRUE, include=TRUE}
+p <- p +
+  scale_y_continuous(
+    position = "right",
+    breaks = seq(120, 600, 60),
+    labels = c(
+      seq(120, 540, 60) / 60,
+      "10 min")
+  )
+```
+:::
+
+::: {.column width="50%\""}
+```{r, echo=FALSE, fig.width=6.5, fig.height=7}
+p
+```
+:::
+:::
+
+## Add annotations for the longest songs
+
+::: columns
+::: {.column width="50%"}
+```{r, echo=TRUE, include=TRUE}
+p <- p +
+  ggrepel::geom_text_repel(
+    data = df_longest_no1_per_decade,
+    aes(label = label),
+    size = 3, family = "Raleway", 
+    color = "grey30", lineheight = 0.8,
+    min.segment.length = unit(0.1, "mm"), 
+    segment.size = 0.2, 
+    segment.color = "grey50",
+    direction = "y", hjust = 0, 
+    nudge_y = 40
+  ) 
+```
+:::
+
+::: {.column width="50%\""}
+```{r, echo=FALSE, fig.width=6.5, fig.height=7}
+p
+```
+:::
+:::
+
+## We can do better
+
+```{r, echo=FALSE}
+
+# Silently remove the geom_text_repel layer
+p$layers[3] <- NULL
+
+```
+
+::: columns
+::: {.column width="50%"}
+```{r, echo=TRUE, include=TRUE}
+p <- p +
+  ggrepel::geom_text_repel(
+    data = filter(
+      df_longest_no1_per_decade, 
+      id == track_id),
+    aes(label = str_wrap(label, 16)),
+    size = 4.5, family = "Raleway SemiBold",
+    color = highlight_color, lineheight = 0.8,
+    min.segment.length = unit(0.1, "mm"), 
+    segment.size = 0.2, 
+    segment.color = "grey50",
+    direction = "y", hjust = 0, 
+    nudge_y = -180
+  ) +
+  ggrepel::geom_text_repel(
+    data = filter(
+      df_longest_no1_per_decade, 
+      id != track_id),
+    aes(label = str_wrap(label, 20)),
+    size = 3.25, family = "Raleway", 
+    color = "grey30", lineheight = 0.8,
+    min.segment.length = unit(0.1, "mm"), 
+    segment.size = 0.2, 
+    segment.color = "grey50",
+    direction = "y", hjust = 0, 
+    nudge_y = 40
+  ) 
+
+```
+:::
+
+::: {.column width="50%\""}
+```{r, echo=FALSE, fig.width=6.5, fig.height=7}
+p
+```
+:::
+:::
+
+## Highlight the longest songs
+
+::: columns
+::: {.column width="50%"}
+```{r, echo=TRUE, include=TRUE}
+p <- p +
+  geom_point(
+    data = filter(
+      df_longest_no1_per_decade,
+      id != track_id),
+    aes(fill = factor(decade)),
+    shape = 21, stroke = 1, 
+    color = "grey80", size = 2,
+    show.legend = FALSE)  +
+  geom_point(
+    data = filter(
+      df_longest_no1_per_decade,
+      id == track_id),
+    shape = 21, stroke = 1, 
+    color = "grey80", size = 3.5,
+    fill = highlight_color,
+    show.legend = FALSE) 
+
+```
+:::
+
+::: {.column width="50%\""}
+```{r, echo=FALSE, fig.width=6.5, fig.height=7}
+p
+```
+:::
+:::
+
+## Finally, add the titles
+
+```{r, echo=FALSE}
+
+plot_titles <- list(
+  title = glue::glue("<b style='color:{highlight_color}'>All Too Well</b> 
+  is the Longest Song in U.S. Chart History"),
+  subtitle = "Taylor Swift's new version of
+  \"All Too Well\" is the longest track to ever top the Billboard Hot 100 with a duration of 
+  10 minutes and 13 seconds. The song replaces **Don McLean's song \"American Pie\"** 
+  (8 minutes and 36 seconds), which became no. 1 on 15 January 1972, after nearly 50 years.
+  <br>
+  Each no. 1 song is a dot. The longest no. 1 song in each decade is highlighted.",
+  caption = "Source: **Billboard Hot 100 (Kaggle), Spotify API** |
+    Visualization: **Ansgar Wolsing**")
+
+```
+
+::: columns
+::: {.column width="50%"}
+```{r, echo=TRUE, include=TRUE}
+p <- p +
+ labs(
+    title = plot_titles$title,
+    subtitle = plot_titles$subtitle,
+    caption = plot_titles$caption,
+    y = "Track duration"
+  )
+
+```
+:::
+
+::: {.column width="50%\""}
+```{r, echo=FALSE, fig.width=6.5, fig.height=7}
+p
+```
+:::
+:::
 
 ## Resources
 
-<div style="font-size: 0.6em">
-- Talk at Data Visualization Meetup Munich March 2024:<br>
-[github.com/bydata/talk-data-visualization-munich-20240305](https://github.com/bydata/talk-data-visualization-munich-20240305)
-- Full R code:<br>
-[github.com/bydata/30DayChartChallenge/tree/main/2022/09](https://github.com/bydata/30DayChartChallenge/tree/main/2022/09)
-- {ggplot2} documentation:<br>
-[ggplot2.tidyverse.org](https://ggplot2.tidyverse.org/)
-- Economist chart: [bsky.app/profile/alexselbyb.bsky.social/post/3lqptoe76jk2e](https://bsky.app/profile/alexselbyb.bsky.social/post/3lqptoe76jk2e)
-</div>
+::: {style="font-size: 0.6em"}
+-   Talk at Data Visualization Meetup Munich March 2024:<br> [github.com/bydata/talk-data-visualization-munich-20240305](https://github.com/bydata/talk-data-visualization-munich-20240305)
+-   Full R code:<br> [github.com/bydata/30DayChartChallenge/tree/main/2022/09](https://github.com/bydata/30DayChartChallenge/tree/main/2022/09)
+-   {ggplot2} documentation: [ggplot2.tidyverse.org](https://ggplot2.tidyverse.org/)
+-   Economist chart: [bsky.app/profile/alexselbyb.bsky.social/post/3lqptoe76jk2e](https://bsky.app/profile/alexselbyb.bsky.social/post/3lqptoe76jk2e)
+- Rick Beato on YouTube: [www.youtube.com/watch?v=aqHePc6Yu7w](https://www.youtube.com/watch?v=aqHePc6Yu7w)
+:::
 
-
-## Contact
+## If you want to stay in touch
 
 ![](media/qr-code-linkedin.png){width="500px"}
-
