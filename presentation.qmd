@@ -27,6 +27,10 @@ div.video-js {
 
 {{< video media/slides-dataviz-meeting-muc-2024.mov width="auto" height="620" aspect-ratio="4x3" autoplay muted loop controlBar={false} >}}
 
+
+## ![Chart](media/09-all-too-well.png){height="720px"} {.center}
+
+
 ## There's a continuum of dataviz tools
 
 ![](media/charting-continuum.png){.center height="500px"}
@@ -71,7 +75,6 @@ create functions for repeated tasks
 :::
 :::
 
-## ![Chart](media/09-all-too-well.png){height="660px"} {.center}
 
 ## 
 
