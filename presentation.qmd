@@ -580,28 +580,6 @@ p
 :::
 :::
 
-## Music? Violins! 🎻 {auto-animate="true"}
-
-::: columns
-::: {.column width="50%"}
-```{r, echo=TRUE, include=TRUE, `code-line-numbers`="3-4"}
-p <- p_base + 
-  geom_violin() +
-  stat_summary(fun = mean,
-               geom = "point")
-```
-
-::: {style="font-size: 0.6em;margin-top: 55px"}
-`stat_summary()` computes an aggregate value and plots it as a given geom
-:::
-:::
-
-::: {.column width="50%"}
-```{r, echo=FALSE, fig.width=6.5, fig.height=6}
-p
-```
-:::
-:::
 
 ## Density-interval combo ("halfeye")? {auto-animate="true"}
 
@@ -770,7 +748,7 @@ p
 :::
 :::
 
-## Finally, the plot
+## Let's start creating the plot
 
 ::: columns
 ::: {.column width="50%"}
@@ -1072,6 +1050,10 @@ p <- p +
   )
 
 ```
+
+<br>
+Not shown:<br>The titles have been defined in the list object `plot_titles`
+
 :::
 
 ::: {.column width="50%\""}
