@@ -31,50 +31,6 @@ div.video-js {
 ## ![Chart](media/09-all-too-well.png){height="720px"} {.center}
 
 
-## There's a continuum of dataviz tools
-
-![](media/charting-continuum.png){.center height="500px"}
-
-<div>
-<p style="font-size: 14pt; font-style:italic">
-Source: Schwabish (2021)
-</p>
-</div>
-
-## Why creating charts with code?
-
-```{css}
-div.column-with-bg {
-  background-color: rgb(0, 0, 0, 0.08);
-  font-size: 0.8em;
-  margin: 8px;
-  padding: 8px;
-  border-radius: 7px;
-  width: 30%;
-  height: 350px;
-}
-```
-
-::: columns
-::: {.column .column-with-bg}
-**Reproducibility**
-
-Every step is explicit and repeatable
-:::
-
-::: {.column .column-with-bg}
-**Customization**
-
-fine-tune, create non-standard charts, share standards programmatically
-:::
-
-::: {.column .column-with-bg}
-**Automation**
-
-create functions for repeated tasks
-:::
-:::
-
 
 ## 
 
@@ -121,7 +77,52 @@ create functions for repeated tasks
 
 ![](images/clipboard-3275579236.png){height="600px"}
 
-# The code
+## There's a continuum of dataviz tools
+
+![](media/charting-continuum.png){.center height="500px"}
+
+<div>
+<p style="font-size: 14pt; font-style:italic">
+Source: Schwabish (2021)
+</p>
+</div>
+
+## Why creating charts with code?
+
+```{css}
+div.column-with-bg {
+  background-color: rgb(0, 0, 0, 0.08);
+  font-size: 0.8em;
+  margin: 8px;
+  padding: 8px;
+  border-radius: 7px;
+  width: 30%;
+  height: 350px;
+}
+```
+
+::: columns
+::: {.column .column-with-bg}
+**Reproducibility**
+
+Every step is explicit and repeatable
+:::
+
+::: {.column .column-with-bg}
+**Customization**
+
+fine-tune, create non-standard charts, share standards programmatically
+:::
+
+::: {.column .column-with-bg}
+**Automation**
+
+create functions for repeated tasks
+:::
+:::
+
+
+
 
 ## ggplot2 at a glance
 
@@ -221,6 +222,10 @@ reveal_gg_layers(7)
 ```
 :::
 
+
+
+# Let's dive into the code
+
 ## Load the required libraries and the dataset
 
 ```{r, echo=TRUE, cache=FALSE, `code-line-numbers`="1,2,3"}
@@ -228,7 +233,8 @@ reveal_gg_layers(7)
 library(tidyverse)
 library(ggtext)
 
-tracks_df <- read_rds(file.path("data", "no1-tracks-prepared.rds"))
+tracks_df <- read_rds(
+  file.path("data", "no1-tracks-prepared.rds"))
 
 ```
 
@@ -244,7 +250,8 @@ library(tidyverse)
 library(glue)
 library(ggtext)
 
-tracks_df <- read_rds(file.path("data", "no1-tracks-prepared.rds"))
+tracks_df <- read_rds(
+  file.path("data", "no1-tracks-prepared.rds"))
 
 ```
 
@@ -258,7 +265,8 @@ library(tidyverse)
 library(glue)
 library(ggtext)
 
-tracks_df <- read_rds(file.path("data", "no1-tracks-prepared.rds"))
+tracks_df <- read_rds(
+  file.path("data", "no1-tracks-prepared.rds"))
 
 ```
 
