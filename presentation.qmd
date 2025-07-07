@@ -226,15 +226,12 @@ reveal_gg_layers(7)
 
 # Let's dive into the code
 
-## Load the required libraries and the dataset
+## Load the required libraries 
 
 ```{r, echo=TRUE, cache=FALSE, `code-line-numbers`="1,2,3"}
 
 library(tidyverse)
 library(ggtext)
-
-tracks_df <- read_rds(
-  file.path("data", "no1-tracks-prepared.rds"))
 
 ```
 
@@ -242,28 +239,8 @@ tracks_df <- read_rds(
 
 {ggplot2} is part of the {tidyverse}
 
-## Load the required libraries and the dataset
 
-```{r, echo=TRUE, cache=TRUE, `code-line-numbers`="5"}
-
-library(tidyverse)
-library(glue)
-library(ggtext)
-
-tracks_df <- read_rds(
-  file.path("data", "no1-tracks-prepared.rds"))
-
-```
-
-`read_rds()` from the `readr` package (part of the `tidverse` meta package) reads an R dataframe which was generated in a separate R script.
-
-## Load the required libraries and the dataset
-
-```{r, echo=TRUE, cache=TRUE, `code-line-numbers`="5"}
-
-library(tidyverse)
-library(glue)
-library(ggtext)
+```{r, echo=FALSE, cache=TRUE}
 
 tracks_df <- read_rds(
   file.path("data", "no1-tracks-prepared.rds"))
@@ -287,7 +264,7 @@ tracks_df |>
 
 Prepare a dataframe with the longest songs per decade. We'll need these for the labels.
 
-```{r, echo=TRUE, cache=TRUE}
+```{r, echo=FALSE, cache=TRUE}
 start_year <- 1960
 df_longest_no1_per_decade <- tracks_df |>
   filter(year(first_no1_date) >= start_year) |> 
@@ -301,13 +278,7 @@ df_longest_no1_per_decade <- tracks_df |>
       artist_song),
     label_wrapped = str_replace(
       label, " - ", "\n"))
-```
 
-## Data preparation
-
-Prepare a dataframe with the longest songs per decade. We'll need these for the labels.
-
-```{r, echo=FALSE}
 df_longest_no1_per_decade |> 
   select(-c(id, href)) |> 
   head(10) |> 
@@ -373,7 +344,7 @@ ggplot(
 :::
 
 ::: {.column width="65%"}
-<br><br>
+<br><br><br>
 
 ```{r, echo=FALSE, fig.width=8, fig.height=4.5}
 ggplot(
@@ -645,7 +616,7 @@ p
 
 ::: columns
 ::: {.column width="50%"}
-```{r, echo=TRUE, include=TRUE}
+```{r, echo=FALSE, include=TRUE}
 library(ggdist)
 
 highlight_color <- "#B14625"
