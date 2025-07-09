@@ -75,7 +75,7 @@ div.video-js {
 
 ## Inspiration
 
-![](images/clipboard-3275579236.png){height="600px"}
+![](media/clipboard-3275579236.png){height="600px"}
 
 ## There's a continuum of dataviz tools
 
