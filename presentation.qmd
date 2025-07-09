@@ -19,7 +19,7 @@ format:
 
 ## What happened so far
 
-```{css}
+```{css, echo=FALSE}
 div.video-js {
   background-color: transparent
 }
@@ -34,8 +34,7 @@ div.video-js {
 ::: chart-title-only
 :::
 
-```{css}
-
+```{css, echo=FALSE}
 .chart-title-only {
     width: 100%; 
     padding-bottom: 17%; 
@@ -54,8 +53,7 @@ div.video-js {
 ::: chart-first-decade-with-title
 :::
 
-```{css}
-
+```{css, echo=FALSE}
 .chart-first-decade-with-title {
     width: 100%; 
     padding-bottom: 43%; 
@@ -85,7 +83,7 @@ Source: Schwabish (2021)
 
 ## Why creating charts with code?
 
-```{css}
+```{css, echo=FALSE}
 div.column-with-bg {
   background-color: rgb(0, 0, 0, 0.08);
   font-size: 0.8em;
@@ -223,9 +221,10 @@ reveal_gg_layers(7)
 library(showtext)
 font_add_google("Poppins")
 font_add_google("Roboto Mono")
-font_add_google("Roboto Condensed")
 font_add_google("Raleway")
 font_add("Raleway SemiBold", regular = "Raleway-SemiBold.ttf")
+# font_add_google("Roboto Condensed")
+# font_add("Roboto Condensed SemiBold", regular = "RobotoCondensed-SemiBold.ttf")
 showtext_auto()
 showtext_opts(dpi = 300)
 
@@ -683,9 +682,9 @@ p <- tracks_df |>
     aes(
     label = "<span style='
     font-family: 
-    \"Roboto Condensed Medium\"'>Taylor Swift</span><br>All Too Well"),
+    \"Raleway SemiBold\"'>Taylor Swift</span><br>All Too Well"),
     size = 5, color = "black",
-    family = "Roboto Condensed",
+    family = "Raleway",
     hjust = 1, nudge_x = -2,
     lineheight = 1.1, label.size = 0,
     fill = NA
@@ -704,7 +703,7 @@ p <- tracks_df |>
     x = NULL, y = NULL
   ) +
   theme_minimal(
-    base_family = "Roboto Condensed",
+    base_family = "Raleway",
     base_size = 18) +
   theme(
     plot.background = element_rect(
