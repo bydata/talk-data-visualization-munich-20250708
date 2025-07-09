@@ -27,10 +27,7 @@ div.video-js {
 
 {{< video media/slides-dataviz-meeting-muc-2024.mov width="auto" height="620" aspect-ratio="4x3" autoplay muted loop controlBar={false} >}}
 
-
 ## ![Chart](media/09-all-too-well.png){height="720px"} {.center}
-
-
 
 ## 
 
@@ -71,7 +68,6 @@ div.video-js {
 }
 
 ```
-
 
 ## Inspiration
 
@@ -120,9 +116,6 @@ fine-tune, create non-standard charts, share standards programmatically
 create functions for repeated tasks
 :::
 :::
-
-
-
 
 ## ggplot2 at a glance
 
@@ -222,11 +215,21 @@ reveal_gg_layers(7)
 ```
 :::
 
-
-
 # Let's dive into the code
 
-## Load the required libraries 
+## Load the required libraries
+
+```{r, echo=FALSE}
+library(showtext)
+font_add_google("Poppins")
+font_add_google("Roboto Mono")
+font_add_google("Roboto Condensed")
+font_add_google("Raleway")
+font_add("Raleway SemiBold", regular = "Raleway-SemiBold.ttf")
+showtext_auto()
+showtext_opts(dpi = 300)
+
+```
 
 ```{r, echo=TRUE, cache=FALSE, `code-line-numbers`="1,2,3"}
 
@@ -238,7 +241,6 @@ library(ggtext)
 `library()` loads R packages into the R session.
 
 {ggplot2} is part of the {tidyverse}
-
 
 ```{r, echo=FALSE, cache=TRUE}
 
@@ -295,7 +297,6 @@ df_longest_no1_per_decade |>
 ## Our first visualization of the data {auto-animate="true"}
 
 ::: columns
-
 ::: {.column width="35%"}
 ```{r, echo=TRUE, eval=FALSE}
 ggplot(
@@ -326,7 +327,6 @@ ggplot(
   theme(axis.text.x = element_text(angle = 60, vjust = 1, hjust = 1))
 ```
 :::
-
 :::
 :::
 
@@ -561,7 +561,6 @@ p
 ```
 :::
 :::
-
 
 ## Density-interval combo ("halfeye")? {auto-animate="true"}
 
@@ -826,8 +825,10 @@ p <- p +
   plot.title = element_markdown(
     color = "black", 
     family = "Raleway SemiBold", size = 18),
-  plot.subtitle = element_textbox_simple(
-    margin = margin(t = 6, b = 6), 
+  plot.subtitle = element_textbox(
+    margin = margin(t = 6, b = 6),
+    lineheight = 1.33,
+    size = 12,
     width = unit(1, "npc"), hjust = 0
   ),
   plot.caption = element_markdown()
@@ -1013,7 +1014,6 @@ plot_titles <- list(
   \"All Too Well\" is the longest track to ever top the Billboard Hot 100 with a duration of 
   10 minutes and 13 seconds. The song replaces **Don McLean's song \"American Pie\"** 
   (8 minutes and 36 seconds), which became no. 1 on 15 January 1972, after nearly 50 years.
-  <br>
   Each no. 1 song is a dot. The longest no. 1 song in each decade is highlighted.",
   caption = "Source: **Billboard Hot 100 (Kaggle), Spotify API** |
     Visualization: **Ansgar Wolsing**")
@@ -1033,9 +1033,7 @@ p <- p +
 
 ```
 
-<br>
-Not shown:<br>The titles have been defined in the list object `plot_titles`
-
+<br> Not shown:<br>The titles have been defined in the list object `plot_titles`
 :::
 
 ::: {.column width="50%\""}
@@ -1052,7 +1050,7 @@ p
 -   Full R code:<br> [github.com/bydata/30DayChartChallenge/tree/main/2022/09](https://github.com/bydata/30DayChartChallenge/tree/main/2022/09)
 -   {ggplot2} documentation: [ggplot2.tidyverse.org](https://ggplot2.tidyverse.org/)
 -   Economist chart: [bsky.app/profile/alexselbyb.bsky.social/post/3lqptoe76jk2e](https://bsky.app/profile/alexselbyb.bsky.social/post/3lqptoe76jk2e)
-- Rick Beato on YouTube: [www.youtube.com/watch?v=aqHePc6Yu7w](https://www.youtube.com/watch?v=aqHePc6Yu7w)
+-   Rick Beato on YouTube: [www.youtube.com/watch?v=aqHePc6Yu7w](https://www.youtube.com/watch?v=aqHePc6Yu7w)
 :::
 
 ## If you want to stay in touch
