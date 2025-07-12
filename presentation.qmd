@@ -76,9 +76,13 @@ div.video-js {
 ![](media/charting-continuum.png){.center height="500px"}
 
 <div>
+
 <p style="font-size: 14pt; font-style:italic">
+
 Source: Schwabish (2021)
+
 </p>
+
 </div>
 
 ## Why creating charts with code?
@@ -184,34 +188,28 @@ Implementation of the Grammar of Graphics (Wilkinson 2005) in R ("gg")
 :::
 
 ::: r-stack
-```{r, echo=FALSE, include=TRUE, warning=FALSE, message=FALSE, fig.height=6.5, out.height="100%", dev="png", dev.args=list(bg="transparent")}
-reveal_gg_layers(1)
-```
+```{r, results="asis", echo=FALSE}
 
-```{r, echo=FALSE, include=TRUE, warning=FALSE, message=FALSE, fig.height=6.5, out.height="100%", dev="png", dev.args=list(bg="transparent"), class="fragment"}
-reveal_gg_layers(2)
-```
-
-```{r, echo=FALSE, include=TRUE, warning=FALSE, message=FALSE, fig.height=6.5, out.height="100%", dev="png", dev.args=list(bg="transparent"), class="fragment"}
-reveal_gg_layers(3)
-```
-
-```{r, echo=FALSE, include=TRUE, warning=FALSE, message=FALSE, fig.height=6.5, out.height="100%", dev="png", dev.args=list(bg="transparent"), class="fragment"}
-reveal_gg_layers(4)
-```
-
-```{r, echo=FALSE, include=TRUE, warning=FALSE, message=FALSE, fig.height=6.5, out.height="100%", dev="png", dev.args=list(bg="transparent"), class="fragment"}
-reveal_gg_layers(5)
-```
-
-```{r, echo=FALSE, include=TRUE, warning=FALSE, message=FALSE, fig.height=6.5, out.height="100%", dev="png", dev.args=list(bg="transparent"), class="fragment"}
-reveal_gg_layers(6)
-```
-
-```{r, echo=FALSE, include=TRUE, warning=FALSE, message=FALSE, fig.height=6.5, out.height="100%", dev="png", dev.args=list(bg="transparent"), class="fragment"}
-reveal_gg_layers(7)
+for (i in seq_len(number_of_shapes)) {
+  cat("::: {.fragment}\n")
+  
+  # Create temporary Rmd content and use knit_child
+  content <- paste0(
+    "```{r, echo=FALSE, include=TRUE, warning=FALSE, message=FALSE, fig.height=6.5, out.height=\"100%\", dev=\"png\", dev.args=list(bg=\"transparent\")}\n",
+    "reveal_gg_layers(", i, ")\n",
+    "```\n"
+  )
+  
+  tmp_file <- tempfile(fileext = ".Rmd")
+  writeLines(content, tmp_file)
+  cat(knitr::knit_child(tmp_file, quiet = TRUE))
+  unlink(tmp_file)
+  
+  cat(":::\n\n")
+}
 ```
 :::
+
 
 # Let's dive into the code
 
